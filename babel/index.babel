@@ -1,0 +1,73 @@
+/* 
+
+
+User Story #4: When I enter GitHub flavored markdown into the #editor element, the text is rendered as HTML in the #preview element as I type (HINT: You don't need to parse Markdown yourself - you can import the Marked library for this: https://cdnjs.com/libraries/marked).
+User Story #5: When my markdown previewer first loads, the default text in the #editor field should contain valid markdown that represents at least one of each of the following elements: a header (H1 size), a sub header (H2 size), a link, inline code, a code block, a list item, a blockquote, an image, and bolded text.
+User Story #6: When my markdown previewer first loads, the default markdown in the #editor field should be rendered as HTML in the #preview element.
+Optional Bonus (you do not need to make this test pass): When I click a link rendered by my markdown previewer, the link is opened up in a new tab (HINT: read the Marked.js docs for this one!).
+Optional Bonus (you do not need to make this test pass): My markdown previewer interprets carriage returns and renders them as br (line break) elements.
+*/
+
+const Editor = props => (
+  <textarea
+    onChange={event => props.onChangeEditor(event.target.value)}
+    id="editor"
+  >
+    {props.defaultText}
+  </textarea>
+);
+const Previewer = props => (
+  <div
+    id="preview"
+    dangerouslySetInnerHTML={{ __html: marked(props.text, { breaks: true }) }}
+  />
+);
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      text:
+        '# The largest heading \n' +
+        '## The second largest heading \n' +
+        '**This is a bolded text**\n' +
+        '\nThis site was built using [Codepen](https://codepen.io/MariaAga/).\n' +
+        'you can:\n' +
+        '- edit text in the editor \n' +
+        '- preview the markdown in the previewer\n' +
+        '\nhere are some code examples:\n' +
+        '``` javascript \n\
+        function test() {\n\
+          console.log("notice the blank line before this function?");\n\
+        }\n\
+        ```\n' +
+        "Use `git status` to list all new or modified files that haven't yet been committed.\n" +
+        '\n![Arthur Weasley](https://vignette.wikia.nocookie.net/harrypotter/images/8/84/Arthur_Weasley.jpg/revision/latest?cb=20060607165546 "Arthur Weasley")\n' +
+        '> Now, Harry you must know all about Muggles, tell me, what exactly is the function of a rubber duck? \
+        -Arthur Weasley\n'
+    };
+  }
+  onChangeEditor = text => {
+    console.log(text);
+    this.setState({ text });
+  };
+  render() {
+    return (
+      <div class="app">
+        <div class="editorWrap">
+          <label class="editorH"> Editor </label>
+          <Editor
+            onChangeEditor={this.onChangeEditor}
+            defaultText={this.state.text}
+          />
+        </div>
+        <div class="previewWrap">
+          <label class="previewH"> Preview </label>
+          <Previewer text={this.state.text} />
+        </div>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<App />, document.getElementById('appWrap'));
